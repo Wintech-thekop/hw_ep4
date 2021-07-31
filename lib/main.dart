@@ -15,11 +15,12 @@ class MyApp extends StatelessWidget {
       title: "Flutter Bootcamp EP4",
       home: Scaffold(
         appBar: AppBar(
+          backgroundColor: Colors.red,
           title: Center(
             child: Text(
-              "ซื้อวัคซีน ออนไลน์",
+              "คำนวณการสั่งซื้อวัคซีน COVID-19",
               style: TextStyle(
-                fontSize: 30,
+                fontSize: 20,
                 color: Colors.white,
                 fontWeight: FontWeight.bold,
               ),

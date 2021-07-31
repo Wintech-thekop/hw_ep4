@@ -13,15 +13,17 @@ class _ShowScreenState extends State<ShowScreen> {
   TextEditingController vaccineController = TextEditingController();
   TextEditingController doseController = TextEditingController();
   TextEditingController priceController = TextEditingController();
+  TextEditingController taxController = TextEditingController();
   double? result;
-  String showtext = "ไม่ได้ทำรายการสั่งซื้อ";
+  String showtext = "กรุณาทำรายการสั่งซื้อวัคซีนด้วยครับ";
 
   void cleardata() {
     priceController.clear();
     vaccineController.clear();
     doseController.clear();
+    taxController.clear();
     setState(() {
-      showtext = "ไม่ได้ทำรายการสั่งซื้อ";
+      showtext = "ล้างข้อมูลสำเร็จ ทำรายการสั่งซื้อใหม่";
     });
   }
 
@@ -132,7 +134,43 @@ class _ShowScreenState extends State<ShowScreen> {
                         },
                         keyboardType: TextInputType.number,
                         decoration: InputDecoration(
-                          labelText: "ราคาโดสละ(บาท)",
+                          labelText: "ราคาต่อโดส(บาท)",
+                          prefixIcon: Icon(Icons.money_rounded),
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.blue),
+                            borderRadius: BorderRadius.circular(25),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.blue),
+                            borderRadius: BorderRadius.circular(25),
+                          ),
+                          errorBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.red),
+                            borderRadius: BorderRadius.circular(25),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: 7,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      width: size * 0.7,
+                      child: TextFormField(
+                        controller: taxController,
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return ("กรุณาใส่ภาษีของวัคซีนที่ต้องการสั่งซื้อด้วยครับ");
+                          } else {}
+                        },
+                        keyboardType: TextInputType.number,
+                        decoration: InputDecoration(
+                          labelText: "ภาษี(เปอร์เซ็นต์)",
                           prefixIcon: Icon(Icons.money_rounded),
                           enabledBorder: OutlineInputBorder(
                             borderSide: BorderSide(color: Colors.blue),
@@ -172,24 +210,28 @@ class _ShowScreenState extends State<ShowScreen> {
                               String price = priceController.text;
                               int quatity = int.parse(dose);
                               int total = int.parse(price);
-                              result = (quatity * total) + (quatity * total * 0.07);
+                              result = (quatity * total) +
+                                  (quatity *
+                                      total *
+                                      double.parse(taxController.text) /
+                                      100);
 
                               setState(() {
                                 showtext =
-                                    "คุณสั่งซื้อวัคซีน ${vaccineController.text} จำนวน ${NumberFormat("#,###").format(int.parse(doseController.text))} โดส เป็นจำนวนเงินทั้งหมด(บวกภาษี 7%) ${NumberFormat("#,###.##").format(result)} บาท";
+                                    "คุณสั่งซื้อวัคซีน $vaccine จำนวน ${NumberFormat("#,###").format(int.parse(doseController.text))} โดส \nเป็นจำนวนเงินทั้งหมด(ภาษี${double.parse(taxController.text)}%) ${NumberFormat("#,###.##").format(result)} บาท";
                               });
-                              print(
-                                  "คุณสั่งซื้อวัคซีน ${vaccineController.text} จำนวน ${NumberFormat("#,###").format(int.parse(doseController.text))} โดส เป็นจำนวนเงินทั้งหมด(บวกภาษี 7%) ${NumberFormat("#,###.##").format(result)} บาท");
                             } else {
                               setState(() {
-                                showtext = "ไม่ได้ทำรายการสั่งซื้อ";
+                                showtext =
+                                    "ไม่สามารถทำรายการสั่งซื้อได้ \nกรุณากรอกข้อมูลให้ครบทุกช่องด้วยครับ";
                               });
                             }
                           },
                           child: Text(
-                            'รวมราคา',
+                            'คำนวณราคา',
+                            textAlign: TextAlign.center,
                             style: TextStyle(
-                              fontSize: 20,
+                              fontSize: 15,
                             ),
                           )),
                     ),
