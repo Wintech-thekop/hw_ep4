@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class ShowScreen extends StatefulWidget {
   const ShowScreen({Key? key}) : super(key: key);
@@ -12,7 +13,7 @@ class _ShowScreenState extends State<ShowScreen> {
   TextEditingController vaccineController = TextEditingController();
   TextEditingController doseController = TextEditingController();
   TextEditingController priceController = TextEditingController();
-  int? result;
+  double? result;
   String showtext = "ไม่ได้ทำรายการสั่งซื้อ";
 
   void cleardata() {
@@ -55,11 +56,11 @@ class _ShowScreenState extends State<ShowScreen> {
                         controller: vaccineController,
                         validator: (value) {
                           if (value!.isEmpty) {
-                            return ("กรุณาเลือกวัคซีนที่ต้องการสั่งซื้อด้วยครับ");
+                            return ("กรุณาใส่วัคซีนที่ต้องการสั่งซื้อด้วยครับ");
                           } else {}
                         },
                         decoration: InputDecoration(
-                          labelText: "กรุณาเลือกวัคซีน",
+                          labelText: "กรุณาใส่วัคซีน",
                           prefixIcon: Icon(Icons.medication_outlined),
                           enabledBorder: OutlineInputBorder(
                             borderSide: BorderSide(color: Colors.blue),
@@ -95,7 +96,7 @@ class _ShowScreenState extends State<ShowScreen> {
                         },
                         keyboardType: TextInputType.number,
                         decoration: InputDecoration(
-                          labelText: "จำนวนโดส",
+                          labelText: "จำนวน(โดส)",
                           prefixIcon: Icon(Icons.medication_outlined),
                           enabledBorder: OutlineInputBorder(
                             borderSide: BorderSide(color: Colors.blue),
@@ -131,7 +132,7 @@ class _ShowScreenState extends State<ShowScreen> {
                         },
                         keyboardType: TextInputType.number,
                         decoration: InputDecoration(
-                          labelText: "ราคาโดสละ (บาท)",
+                          labelText: "ราคาโดสละ(บาท)",
                           prefixIcon: Icon(Icons.money_rounded),
                           enabledBorder: OutlineInputBorder(
                             borderSide: BorderSide(color: Colors.blue),
@@ -171,14 +172,14 @@ class _ShowScreenState extends State<ShowScreen> {
                               String price = priceController.text;
                               int quatity = int.parse(dose);
                               int total = int.parse(price);
-                              result = quatity * total;
+                              result = (quatity * total) + (quatity * total * 0.07);
 
                               setState(() {
                                 showtext =
-                                    "คุณสั่งซื้อวัคซีน ${vaccineController.text} จำนวน ${doseController.text} โดส รวมเป็นจำนวนเงิน $result บาท";
+                                    "คุณสั่งซื้อวัคซีน ${vaccineController.text} จำนวน ${NumberFormat("#,###").format(int.parse(doseController.text))} โดส เป็นจำนวนเงินทั้งหมด(บวกภาษี 7%) ${NumberFormat("#,###.##").format(result)} บาท";
                               });
                               print(
-                                  "คุณสั่งซื้อวัคซีน $vaccine จำนวน $dose โดส รวมเป็นจำนวนเงิน $result บาท");
+                                  "คุณสั่งซื้อวัคซีน ${vaccineController.text} จำนวน ${NumberFormat("#,###").format(int.parse(doseController.text))} โดส เป็นจำนวนเงินทั้งหมด(บวกภาษี 7%) ${NumberFormat("#,###.##").format(result)} บาท");
                             } else {
                               setState(() {
                                 showtext = "ไม่ได้ทำรายการสั่งซื้อ";
@@ -195,11 +196,12 @@ class _ShowScreenState extends State<ShowScreen> {
                   ],
                 ),
                 Container(
+                  padding: const EdgeInsets.all(15.0),
                   width: size * 0.7,
                   child: Text(
                     showtext,
                     style: TextStyle(
-                      fontSize: 20,
+                      fontSize: 15,
                       color: Colors.purple,
                       fontWeight: FontWeight.bold,
                     ),
